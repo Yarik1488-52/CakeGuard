@@ -9,14 +9,14 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
+      - name: List Files
+        run: ls -R
       - name: Compile
         run: |
           curl -L -o api.jar https://repo.papermc.io/repository/maven-public/io/papermc/paper/paper-api/1.21.1-R0.1-SNAPSHOT/paper-api-1.21.1-R0.1-20241022.064544-16.jar
-          mkdir -p me/yarik/cakeguard
-          cp CakeGuard.java me/yarik/cakeguard/
-          javac -cp api.jar me/yarik/cakeguard/CakeGuard.java
-          jar cvf CakeGuard.jar plugin.yml me/yarik/cakeguard/*.class
+          javac -cp api.jar CakeGuard.java
+          jar cvf CakeGuard.jar plugin.yml *.class
       - uses: actions/upload-artifact@v4
         with:
-          name: MyPluginFile
+          name: CakeGuard-JAR
           path: CakeGuard.jar
