@@ -1,3 +1,5 @@
+package me.yarik.cakeguard;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -23,10 +25,9 @@ public class CakeGuard extends JavaPlugin implements Listener {
         String msg = e.getMessage().toLowerCase();
         UUID uuid = p.getUniqueId();
 
-        // Ігнор для тебе
         if (p.getName().equalsIgnoreCase("Yarikznaeprava")) return;
 
-        // --- КУЛДАУН 3 СЕКУНДИ ---
+        // Кулдаун 3 секунди
         if (cooldowns.containsKey(uuid)) {
             long timeLeft = ((cooldowns.get(uuid) / 1000) + 3) - (System.currentTimeMillis() / 1000);
             if (timeLeft > 0) {
@@ -37,21 +38,14 @@ public class CakeGuard extends JavaPlugin implements Listener {
         }
         cooldowns.put(uuid, System.currentTimeMillis());
 
-        // --- ПЕРЕВІРКА НА ОБРАЗИ (Рідні, Адмін, Проекти) ---
-        // Тут тільки те, за що реально треба карати
+        // Тільки жорсткі образи рідних та адмінів
         if (msg.matches(".*(мать|маму|батя|отчим|mamy|mamu|mq|админ лох|сервер говно|мать ебал).*")) {
             e.setCancelled(true);
             String n = p.getName();
             
             Bukkit.getScheduler().runTask(this, () -> {
-                // Команда муту
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tempmute " + n + " 12h 3.1 (Образа рідних/адміністрації)");
-                
-                // Оголошення в чат
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&8&l&m---------------------------------------"));
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', " &c&lPUNISH &8» &fГравець &e" + n + " &fзамучений!"));
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', " &c&lPUNISH &8» &fПричина: &7Неадекватна поведінка (3.1)"));
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&8&l&m---------------------------------------"));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tempmute " + n + " 12h 3.1");
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPUNISH &8» &fГравець &e" + n + " &fзамучений за образу рідних."));
             });
         }
     }
