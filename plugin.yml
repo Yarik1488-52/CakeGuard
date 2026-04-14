@@ -1,0 +1,5 @@
+name: CakeGuard
+version: 1.1
+main: me.yarik.cakeguard.CakeGuard
+api-version: 1.21
+author: Yarik
