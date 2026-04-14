@@ -9,8 +9,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class CakeGuard extends JavaPlugin implements Listener {
-
-    private final HashMap<UUID, Long> cooldowns = new HashMap<>();
+    private final HashMap<UUID, Long> cd = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -20,29 +19,23 @@ public class CakeGuard extends JavaPlugin implements Listener {
     @EventHandler
     public void onChat(AsyncPlayerChatEvent e) {
         Player p = e.getPlayer();
-        String msg = e.getMessage().toLowerCase();
-        UUID uuid = p.getUniqueId();
+        UUID u = p.getUniqueId();
+        String m = e.getMessage().toLowerCase();
 
         if (p.getName().equalsIgnoreCase("Yarikznaeprava")) return;
 
-        // Кулдаун 3 секунди
-        if (cooldowns.containsKey(uuid)) {
-            long timeLeft = ((cooldowns.get(uuid) / 1000) + 3) - (System.currentTimeMillis() / 1000);
-            if (timeLeft > 0) {
-                e.setCancelled(true);
-                p.sendMessage(ChatColor.RED + "Зачекайте " + timeLeft + " сек.");
-                return;
-            }
-        }
-        cooldowns.put(uuid, System.currentTimeMillis());
-
-        // Фільтр тільки на жорсткі образи
-        if (msg.matches(".*(мать|маму|батя|отчим|mamy|mamu|mq|админ лох|сервер говно|мать ебал).*")) {
+        if (cd.containsKey(u) && (System.currentTimeMillis() - cd.get(u)) < 3000) {
             e.setCancelled(true);
-            String n = p.getName();
+            p.sendMessage(ChatColor.RED + "Зачекайте 3 сек!");
+            return;
+        }
+        cd.put(u, System.currentTimeMillis());
+
+        if (m.matches(".*(мать|маму|батя|mq|админ лох|сервер говно).*")) {
+            e.setCancelled(true);
             Bukkit.getScheduler().runTask(this, () -> {
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tempmute " + n + " 12h 3.1");
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPUNISH &8» &fГравець &e" + n + " &fзамучений за образу рідних!"));
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tempmute " + p.getName() + " 12h 3.1");
+                Bukkit.broadcastMessage(ChatColor.RED + "Гравець " + p.getName() + " замучений за образи!");
             });
         }
     }
