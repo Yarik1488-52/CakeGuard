@@ -1,5 +1,3 @@
-package me.yarik.cakeguard;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -27,7 +25,7 @@ public class CakeGuard extends JavaPlugin implements Listener {
 
         if (p.getName().equalsIgnoreCase("Yarikznaeprava")) return;
 
-        // Кулдаун 3 секунди
+        // Затримка 3 секунди
         if (cooldowns.containsKey(uuid)) {
             long timeLeft = ((cooldowns.get(uuid) / 1000) + 3) - (System.currentTimeMillis() / 1000);
             if (timeLeft > 0) {
@@ -38,14 +36,15 @@ public class CakeGuard extends JavaPlugin implements Listener {
         }
         cooldowns.put(uuid, System.currentTimeMillis());
 
-        // Тільки жорсткі образи рідних та адмінів
+        // Тільки жорсткі образи (НЕ мутить за звичайні мати)
         if (msg.matches(".*(мать|маму|батя|отчим|mamy|mamu|mq|админ лох|сервер говно|мать ебал).*")) {
             e.setCancelled(true);
             String n = p.getName();
             
             Bukkit.getScheduler().runTask(this, () -> {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tempmute " + n + " 12h 3.1");
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPUNISH &8» &fГравець &e" + n + " &fзамучений за образу рідних."));
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', 
+                    "&c&lPUNISH &8» &fГравець &e" + n + " &fзамучений за образу рідних або адміна!"));
             });
         }
     }
