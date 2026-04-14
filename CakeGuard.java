@@ -25,26 +25,24 @@ public class CakeGuard extends JavaPlugin implements Listener {
 
         if (p.getName().equalsIgnoreCase("Yarikznaeprava")) return;
 
-        // Затримка 3 секунди
+        // Кулдаун 3 секунди
         if (cooldowns.containsKey(uuid)) {
             long timeLeft = ((cooldowns.get(uuid) / 1000) + 3) - (System.currentTimeMillis() / 1000);
             if (timeLeft > 0) {
                 e.setCancelled(true);
-                p.sendMessage(ChatColor.RED + "Зачекайте ще " + timeLeft + " сек.");
+                p.sendMessage(ChatColor.RED + "Зачекайте " + timeLeft + " сек.");
                 return;
             }
         }
         cooldowns.put(uuid, System.currentTimeMillis());
 
-        // Тільки жорсткі образи (НЕ мутить за звичайні мати)
+        // Фільтр тільки на жорсткі образи
         if (msg.matches(".*(мать|маму|батя|отчим|mamy|mamu|mq|админ лох|сервер говно|мать ебал).*")) {
             e.setCancelled(true);
             String n = p.getName();
-            
             Bukkit.getScheduler().runTask(this, () -> {
                 Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "tempmute " + n + " 12h 3.1");
-                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', 
-                    "&c&lPUNISH &8» &fГравець &e" + n + " &fзамучений за образу рідних або адміна!"));
+                Bukkit.broadcastMessage(ChatColor.translateAlternateColorCodes('&', "&c&lPUNISH &8» &fГравець &e" + n + " &fзамучений за образу рідних!"));
             });
         }
     }
